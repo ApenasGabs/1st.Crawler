@@ -1,0 +1,13 @@
+{
+  "name": "1st.crawler",
+  "version": "1.0.0",
+  "description": "Just a simple crawler in NodeJS",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "request": "^2.88.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
