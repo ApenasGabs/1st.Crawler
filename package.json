@@ -6,6 +6,7 @@
   "author": "Apenasgabs <Gabers357@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "playwright": "^1.52.0",
     "puppeteer": "^10.1.0"
   }
 }
