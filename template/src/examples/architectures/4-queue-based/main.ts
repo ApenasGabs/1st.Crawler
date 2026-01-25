@@ -8,7 +8,7 @@ import type { JobResult } from "./IJob";
 /**
  * Simulador de Queue-Based (sem Redis/Bull complexo)
  * Em produção, usar Bull Queue com Redis
- * 
+ *
  * Demonstra conceito:
  * - Jobs como tarefas independentes
  * - Execução sequencial com retry
@@ -45,7 +45,9 @@ const main = async (): Promise<void> => {
 
       while (attempts < jobDef.maxRetries && !success) {
         attempts++;
-        logger.info(`[${jobDef.name}] Tentativa ${attempts}/${jobDef.maxRetries}`);
+        logger.info(
+          `[${jobDef.name}] Tentativa ${attempts}/${jobDef.maxRetries}`,
+        );
 
         const context = await browser.newContext();
 
@@ -67,7 +69,7 @@ const main = async (): Promise<void> => {
           if (result.success) {
             success = true;
             logger.info(
-              `✅ ${jobDef.name}: ${result.records.length} registros em ${result.duration}ms`
+              `✅ ${jobDef.name}: ${result.records.length} registros em ${result.duration}ms`,
             );
           } else {
             logger.warn(`⚠️ ${jobDef.name}: ${result.error}`);
@@ -81,7 +83,10 @@ const main = async (): Promise<void> => {
         if (!success && attempts < jobDef.maxRetries) {
           logger.info(`Aguardando ${process.env.RETRY_DELAY || 5} segundos...`);
           await new Promise((resolve) =>
-            setTimeout(resolve, (parseInt(process.env.RETRY_DELAY || "5") * 1000))
+            setTimeout(
+              resolve,
+              parseInt(process.env.RETRY_DELAY || "5") * 1000,
+            ),
           );
         }
       }
@@ -98,18 +103,20 @@ const main = async (): Promise<void> => {
     fs.mkdirSync(process.env.DATA_OUTPUT_DIR || "data", { recursive: true });
     fs.writeFileSync(
       `${process.env.DATA_OUTPUT_DIR || "data"}/merged.json`,
-      JSON.stringify(allRecords, null, 2)
+      JSON.stringify(allRecords, null, 2),
     );
 
     // Salvar histórico de jobs
     fs.writeFileSync(
       `${process.env.DATA_OUTPUT_DIR || "data"}/job-history.json`,
-      JSON.stringify(results, null, 2)
+      JSON.stringify(results, null, 2),
     );
 
-    logger.info(`✅ Pipeline Queue-Based concluído: ${allRecords.length} registros`);
     logger.info(
-      `📊 Histórico salvo em: ${process.env.DATA_OUTPUT_DIR || "data"}/job-history.json`
+      `✅ Pipeline Queue-Based concluído: ${allRecords.length} registros`,
+    );
+    logger.info(
+      `📊 Histórico salvo em: ${process.env.DATA_OUTPUT_DIR || "data"}/job-history.json`,
     );
   } catch (error) {
     logger.error("Erro no pipeline:", error);

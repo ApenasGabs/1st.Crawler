@@ -1,5 +1,3 @@
-import type { BrowserContext } from "playwright";
-import type { Logger } from "winston";
 import { BaseScraper } from "./BaseScraper";
 import type { RawData, Record } from "./types";
 

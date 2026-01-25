@@ -11,7 +11,7 @@ export class MergeService {
 
   merge(recordsBySource: ContentRecord[]): ContentRecord[] {
     this.logger.info(
-      `Merging ${recordsBySource.length} records de múltiplas fontes`
+      `Merging ${recordsBySource.length} records de múltiplas fontes`,
     );
 
     // Deduplicar por ID
@@ -27,7 +27,8 @@ export class MergeService {
 
     // Ordenar por data
     const sorted = unique.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
     this.logger.info(`Após merge: ${sorted.length} records únicos`);

@@ -10,7 +10,7 @@ export class QuoteJob implements IJob {
 
   constructor(
     private context: BrowserContext,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   async execute(): Promise<JobResult> {

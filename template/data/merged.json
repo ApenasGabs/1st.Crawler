@@ -1,0 +1,182 @@
+[
+  {
+    "id": "quote-0",
+    "source": "quotes-to-scrape",
+    "text": "“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”",
+    "author": "Albert Einstein"
+  },
+  {
+    "id": "quote-1",
+    "source": "quotes-to-scrape",
+    "text": "“It is our choices, Harry, that show what we truly are, far more than our abilities.”",
+    "author": "J.K. Rowling"
+  },
+  {
+    "id": "quote-2",
+    "source": "quotes-to-scrape",
+    "text": "“There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”",
+    "author": "Albert Einstein"
+  },
+  {
+    "id": "quote-3",
+    "source": "quotes-to-scrape",
+    "text": "“The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.”",
+    "author": "Jane Austen"
+  },
+  {
+    "id": "quote-4",
+    "source": "quotes-to-scrape",
+    "text": "“Imperfection is beauty, madness is genius and it's better to be absolutely ridiculous than absolutely boring.”",
+    "author": "Marilyn Monroe"
+  },
+  {
+    "id": "quote-5",
+    "source": "quotes-to-scrape",
+    "text": "“Try not to become a man of success. Rather become a man of value.”",
+    "author": "Albert Einstein"
+  },
+  {
+    "id": "quote-6",
+    "source": "quotes-to-scrape",
+    "text": "“It is better to be hated for what you are than to be loved for what you are not.”",
+    "author": "André Gide"
+  },
+  {
+    "id": "quote-7",
+    "source": "quotes-to-scrape",
+    "text": "“I have not failed. I've just found 10,000 ways that won't work.”",
+    "author": "Thomas A. Edison"
+  },
+  {
+    "id": "quote-8",
+    "source": "quotes-to-scrape",
+    "text": "“A woman is like a tea bag; you never know how strong it is until it's in hot water.”",
+    "author": "Eleanor Roosevelt"
+  },
+  {
+    "id": "quote-9",
+    "source": "quotes-to-scrape",
+    "text": "“A day without sunshine is like, you know, night.”",
+    "author": "Steve Martin"
+  },
+  {
+    "id": "book-0",
+    "source": "books-to-scrape",
+    "title": "A Light in the Attic",
+    "price": "£51.77"
+  },
+  {
+    "id": "book-1",
+    "source": "books-to-scrape",
+    "title": "Tipping the Velvet",
+    "price": "£53.74"
+  },
+  {
+    "id": "book-2",
+    "source": "books-to-scrape",
+    "title": "Soumission",
+    "price": "£50.10"
+  },
+  {
+    "id": "book-3",
+    "source": "books-to-scrape",
+    "title": "Sharp Objects",
+    "price": "£47.82"
+  },
+  {
+    "id": "book-4",
+    "source": "books-to-scrape",
+    "title": "Sapiens: A Brief History of Humankind",
+    "price": "£54.23"
+  },
+  {
+    "id": "book-5",
+    "source": "books-to-scrape",
+    "title": "The Requiem Red",
+    "price": "£22.65"
+  },
+  {
+    "id": "book-6",
+    "source": "books-to-scrape",
+    "title": "The Dirty Little Secrets of Getting Your Dream Job",
+    "price": "£33.34"
+  },
+  {
+    "id": "book-7",
+    "source": "books-to-scrape",
+    "title": "The Coming Woman: A Novel Based on the Life of the Infamous Feminist, Victoria Woodhull",
+    "price": "£17.93"
+  },
+  {
+    "id": "book-8",
+    "source": "books-to-scrape",
+    "title": "The Boys in the Boat: Nine Americans and Their Epic Quest for Gold at the 1936 Berlin Olympics",
+    "price": "£22.60"
+  },
+  {
+    "id": "book-9",
+    "source": "books-to-scrape",
+    "title": "The Black Maria",
+    "price": "£52.15"
+  },
+  {
+    "id": "book-10",
+    "source": "books-to-scrape",
+    "title": "Starving Hearts (Triangular Trade Trilogy, #1)",
+    "price": "£13.99"
+  },
+  {
+    "id": "book-11",
+    "source": "books-to-scrape",
+    "title": "Shakespeare's Sonnets",
+    "price": "£20.66"
+  },
+  {
+    "id": "book-12",
+    "source": "books-to-scrape",
+    "title": "Set Me Free",
+    "price": "£17.46"
+  },
+  {
+    "id": "book-13",
+    "source": "books-to-scrape",
+    "title": "Scott Pilgrim's Precious Little Life (Scott Pilgrim #1)",
+    "price": "£52.29"
+  },
+  {
+    "id": "book-14",
+    "source": "books-to-scrape",
+    "title": "Rip it Up and Start Again",
+    "price": "£35.02"
+  },
+  {
+    "id": "book-15",
+    "source": "books-to-scrape",
+    "title": "Our Band Could Be Your Life: Scenes from the American Indie Underground, 1981-1991",
+    "price": "£57.25"
+  },
+  {
+    "id": "book-16",
+    "source": "books-to-scrape",
+    "title": "Olio",
+    "price": "£23.88"
+  },
+  {
+    "id": "book-17",
+    "source": "books-to-scrape",
+    "title": "Mesaerion: The Best Science Fiction Stories 1800-1849",
+    "price": "£37.59"
+  },
+  {
+    "id": "book-18",
+    "source": "books-to-scrape",
+    "title": "Libertarianism for Beginners",
+    "price": "£51.33"
+  },
+  {
+    "id": "book-19",
+    "source": "books-to-scrape",
+    "title": "It's Only the Himalayas",
+    "price": "£45.17"
+  }
+]

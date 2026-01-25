@@ -12,7 +12,7 @@ export class BookAdapter implements IDataAdapter {
 
   constructor(
     private context: BrowserContext,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   async fetch(): Promise<unknown[]> {
@@ -50,7 +50,7 @@ export class BookAdapter implements IDataAdapter {
         description: `Preço: ${item.price}`,
         externalUrl: "https://books.toscrape.com/",
         createdAt: new Date().toISOString(),
-      })
+      }),
     );
   }
 

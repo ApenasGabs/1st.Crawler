@@ -12,7 +12,7 @@ export class QuoteAdapter implements IDataAdapter {
 
   constructor(
     private context: BrowserContext,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   async fetch(): Promise<unknown[]> {
@@ -46,7 +46,7 @@ export class QuoteAdapter implements IDataAdapter {
         description: item.author,
         externalUrl: "https://quotes.toscrape.com/",
         createdAt: new Date().toISOString(),
-      })
+      }),
     );
   }
 

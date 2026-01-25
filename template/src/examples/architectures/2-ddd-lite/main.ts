@@ -40,7 +40,10 @@ const main = async (): Promise<void> => {
     // Fazer merge
     const mergeService = new MergeService(logger);
     const merged = mergeService.merge(records);
-    mergeService.save(merged, `${process.env.DATA_OUTPUT_DIR || "data"}/merged.json`);
+    mergeService.save(
+      merged,
+      `${process.env.DATA_OUTPUT_DIR || "data"}/merged.json`,
+    );
 
     logger.info(`✅ Pipeline DDD concluído: ${merged.length} registros`);
 

@@ -48,7 +48,7 @@ const main = async (): Promise<void> => {
       if (output.success) {
         allRecords.push(...output.records);
         logger.info(
-          `✅ ${output.pluginName}: ${output.records.length} registros em ${output.duration}ms`
+          `✅ ${output.pluginName}: ${output.records.length} registros em ${output.duration}ms`,
         );
       } else {
         logger.error(`❌ ${output.pluginName}: ${output.error}`);
@@ -59,10 +59,12 @@ const main = async (): Promise<void> => {
     fs.mkdirSync(process.env.DATA_OUTPUT_DIR || "data", { recursive: true });
     fs.writeFileSync(
       `${process.env.DATA_OUTPUT_DIR || "data"}/merged.json`,
-      JSON.stringify(allRecords, null, 2)
+      JSON.stringify(allRecords, null, 2),
     );
 
-    logger.info(`✅ Pipeline Plugin-Based concluído: ${allRecords.length} registros`);
+    logger.info(
+      `✅ Pipeline Plugin-Based concluído: ${allRecords.length} registros`,
+    );
 
     // Cleanup
     await registry.destroyAll();

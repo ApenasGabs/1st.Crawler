@@ -22,17 +22,17 @@ export class ScraperService {
           }
 
           this.logger.info(
-            `✅ ${adapter.name}: ${transformed.length} registros`
+            `✅ ${adapter.name}: ${transformed.length} registros`,
           );
           return transformed;
         } catch (error) {
           this.logger.error(
             `❌ ${adapter.name}:`,
-            error instanceof Error ? error.message : String(error)
+            error instanceof Error ? error.message : String(error),
           );
           throw error;
         }
-      })
+      }),
     );
 
     const allRecords: ContentRecord[] = [];

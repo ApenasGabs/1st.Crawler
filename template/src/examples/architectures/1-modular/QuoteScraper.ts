@@ -1,5 +1,3 @@
-import type { BrowserContext } from "playwright";
-import type { Logger } from "winston";
 import { BaseScraper } from "./BaseScraper";
 import type { RawData, Record } from "./types";
 
@@ -18,7 +16,6 @@ export class QuoteScraper extends BaseScraper {
       for (let i = 0; i < quotes.length; i++) {
         const quote = quotes[i];
         const text = (await quote.locator(".text").textContent()) ?? "";
-        const author = (await quote.locator(".author").textContent()) ?? "";
 
         rawData.push({
           id: `quote-${i}`,

@@ -12,7 +12,7 @@ export class QuotePlugin implements IPlugin {
 
   constructor(
     private context: BrowserContext,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   async init(): Promise<void> {

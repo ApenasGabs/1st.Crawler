@@ -1,5 +1,3 @@
-import type { ReactElement, ReactNode } from "react";
-
 /**
  * Record genérico para dados extraídos
  */

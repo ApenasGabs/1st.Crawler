@@ -11,6 +11,7 @@
     "merge:validate": "tsx src/pipeline/merge-and-validate.ts",
     "checkpoint:save": "tsx src/pipeline/checkpoint-save.ts",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest"
   },
   "dependencies": {

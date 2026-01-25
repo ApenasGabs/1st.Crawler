@@ -81,12 +81,12 @@ jobs:
       - name: Commit data changes (if any)
         run: |
           cd "${{ env.TEMPLATE_DIR }}"
-          
+
           git config user.name "crawler-bot"
           git config user.email "crawler-bot@users.noreply.github.com"
-          
+
           git add -A data/scrapers/ || true
-          
+
           if ! git diff --cached --quiet; then
             echo "✅ Fazendo commit..."
             git commit -m "chore: 🔧 atualiza dados de scraping"
