@@ -1,0 +1,30 @@
+{
+  "name": "1st-crawler-template",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "scrape:parallel": "tsx src/main.ts",
+    "scrape:siteA": "tsx src/scrapers/siteA/run.ts",
+    "scrape:siteB": "tsx src/scrapers/siteB/run.ts",
+    "merge:validate": "tsx src/pipeline/merge-and-validate.ts",
+    "checkpoint:save": "tsx src/pipeline/checkpoint-save.ts",
+    "lint": "eslint .",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@types/node": "^20.12.12",
+    "dotenv": "^16.4.5",
+    "joi": "^17.13.3",
+    "playwright": "^1.45.3",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.4.0",
+    "@eslint/js": "^9.4.0",
+    "typescript": "^5.6.2",
+    "tsx": "^4.16.2",
+    "vitest": "^1.6.0"
+  }
+}

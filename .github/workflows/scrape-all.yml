@@ -1,0 +1,96 @@
+name: Scrape All
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  TEMPLATE_DIR: "1st.Crawler/template"
+  DATA_DIR: "1st.Crawler/template/data/scrapers"
+  MAX_RETRIES: 2
+  RETRY_DELAY: 10
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        working-directory: ${{ env.TEMPLATE_DIR }}
+        run: npm ci --prefer-offline
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libxss1 libgtk-3-0 libnotify-dev libnss3 libx11-xcb1
+
+      - name: Install Playwright browsers
+        working-directory: ${{ env.TEMPLATE_DIR }}
+        run: npx playwright install --with-deps chromium
+
+      - name: Create data directory
+        run: mkdir -p ${{ env.DATA_DIR }}
+
+      - name: Run parallel scraping with retries
+        id: scrape
+        working-directory: ${{ env.TEMPLATE_DIR }}
+        run: |
+          set +e
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES"
+            Xvfb :99 -ac -screen 0 1280x1024x16 &
+            export DISPLAY=:99
+            if npm run scrape:parallel; then
+              echo "Scraping completed successfully"
+              break
+            else
+              echo "Scraping failed on attempt $i"
+              if [ $i -lt $MAX_RETRIES ]; then
+                echo "Waiting $RETRY_DELAY seconds before retry..."
+                sleep $RETRY_DELAY
+              fi
+            fi
+          done
+          set -e
+
+      - name: Merge and validate
+        working-directory: ${{ env.TEMPLATE_DIR }}
+        run: npm run merge:validate
+
+      - name: Verify output files
+        run: |
+          echo "===== Verificando arquivos ====="
+          if [ -d "${{ env.DATA_DIR }}" ]; then
+            echo "✅ Diretório encontrado"
+            ls -lh "${{ env.DATA_DIR }}" || echo "Vazio"
+          fi
+
+      - name: Commit data changes (if any)
+        run: |
+          cd "${{ env.TEMPLATE_DIR }}"
+          
+          git config user.name "crawler-bot"
+          git config user.email "crawler-bot@users.noreply.github.com"
+          
+          git add -A data/scrapers/ || true
+          
+          if ! git diff --cached --quiet; then
+            echo "✅ Fazendo commit..."
+            git commit -m "chore: 🔧 atualiza dados de scraping"
+            git push
+          else
+            echo "ℹ️ Sem mudanças"
+          fi
