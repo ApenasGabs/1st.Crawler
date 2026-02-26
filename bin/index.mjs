@@ -100,7 +100,20 @@ function select(label, options, descriptions, colors, defaultIdx = 0) {
 
     const onKey = (data) => {
       const k = data.toString();
-      if (k === "\x03") process.exit(1);
+      if (k === "\x03") {
+        // Restore terminal state before propagating SIGINT
+        try {
+          if (process.stdin.isTTY) {
+            process.stdin.setRawMode(false);
+          }
+        } catch {
+          // ignore errors restoring raw mode
+        }
+        process.stdin.pause();
+        process.stdin.removeListener("data", onKey);
+        process.kill(process.pid, "SIGINT");
+        return;
+      }
       if (k === "\x1b[A") {
         idx = idx === 0 ? options.length - 1 : idx - 1;
         render();

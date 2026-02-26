@@ -38,7 +38,7 @@ export abstract class BaseHttpScraper<T extends RawData = RawData> {
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ao acessar ${url}`);
+        throw new Error(`HTTP ${res.status} when accessing ${url}`);
       }
 
       const html = await res.text();

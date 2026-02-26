@@ -9,4 +9,4 @@ const main = async (): Promise<void> => {
   console.log(JSON.stringify(data, null, 2));
 };
 
-void main();
+main().catch(console.error);

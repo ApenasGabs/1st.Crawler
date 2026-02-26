@@ -1,0 +1,9 @@
+# Dev / repo files — not shipped to npm
+.git
+.github
+.gitignore
+node_modules
+*.tgz
+.DS_Store
+Thumbs.db
+ARQUITECTURAS_SCRAPING.md
