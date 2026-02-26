@@ -14,6 +14,14 @@ npm run scrape:siteB
 
 # Merge + validação (gera data/imoveis.json)
 npm run merge:validate
+
+# Gerar um novo template baseado em arquitetura
+npm run scaffold:architecture -- --arch 1-modular --dest new-template
+
+# Modo interativo (estilo vite)
+npm run scaffold:architecture
+
+> Dica: use as setas ↑/↓ para selecionar a arquitetura
 ```
 
 ## 📁 Estrutura

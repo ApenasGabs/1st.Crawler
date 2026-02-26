@@ -10,6 +10,7 @@
     "scrape:siteB": "tsx src/scrapers/siteB/run.ts",
     "merge:validate": "tsx src/pipeline/merge-and-validate.ts",
     "checkpoint:save": "tsx src/pipeline/checkpoint-save.ts",
+    "scaffold:architecture": "tsx scripts/scaffold-architecture.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest"

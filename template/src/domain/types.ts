@@ -1,8 +1,8 @@
 /**
- * Record genérico para dados extraídos
+ * Dados extraídos
  * Adapte conforme sua necessidade de domínio
  */
-export interface Record {
+export interface ExtractedRecord {
   id: string;
   source: string;
   title: string;
