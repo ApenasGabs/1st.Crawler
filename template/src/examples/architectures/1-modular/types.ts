@@ -1,15 +1,15 @@
 /**
  * Record genérico para dados extraídos
  */
-export interface Record {
+export interface ScrapedRecord {
   id: string;
   source: string;
   title: string;
   description?: string;
-  price?: number;
+  price?: number | string;
   location?: string;
   url: string;
-  metadata?: Record<string, unknown>;
+  metadata?: globalThis.Record<string, unknown>;
   createdAt: string;
 }
 

@@ -1,5 +1,5 @@
 import { BaseScraper } from "./BaseScraper";
-import type { RawData, Record } from "./types";
+import type { RawData, ScrapedRecord } from "./types";
 
 /**
  * Exemplo 1: Scraper de citações (Quotes to Scrape)
@@ -30,7 +30,7 @@ export class QuoteScraper extends BaseScraper {
     }
   }
 
-  map(rawData: RawData[]): Record[] {
+  map(rawData: RawData[]): ScrapedRecord[] {
     return rawData.map((data) => ({
       id: data.id,
       source: "quotes-to-scrape",

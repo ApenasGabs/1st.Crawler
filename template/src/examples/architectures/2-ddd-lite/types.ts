@@ -6,7 +6,7 @@ export interface ContentRecord {
   source: string;
   title: string;
   description?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: globalThis.Record<string, unknown>;
   createdAt: string;
   externalUrl: string;
 }

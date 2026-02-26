@@ -1,6 +1,6 @@
 import type { BrowserContext } from "playwright";
 import type { Logger } from "winston";
-import type { Record, RawData } from "./types";
+import type { RawData, ScrapedRecord } from "./types";
 
 /**
  * Contrato abstrato para scrapers
@@ -29,19 +29,19 @@ export abstract class BaseScraper {
   /**
    * Map: transformar RawData → Record
    */
-  abstract map(rawData: RawData[]): Record[];
+  abstract map(rawData: RawData[]): ScrapedRecord[];
 
   /**
    * Validate: verificar se dados estão válidos
    */
-  validate(records: Record[]): boolean {
+  validate(records: ScrapedRecord[]): boolean {
     return records.length > 0;
   }
 
   /**
    * Run: executa pipeline completo
    */
-  async run(): Promise<Record[]> {
+  async run(): Promise<ScrapedRecord[]> {
     const startTime = Date.now();
     try {
       this.logger.info(`[${this.name}] Iniciando scrape`);
