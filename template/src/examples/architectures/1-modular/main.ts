@@ -1,9 +1,9 @@
 import winston from "winston";
-import { BrowserPool } from "./BrowserPool";
-import { QuoteScraper } from "./QuoteScraper";
 import { BookScraper } from "./BookScraper";
+import { BrowserPool } from "./BrowserPool";
 import { mergeAndValidate } from "./merge";
-import type { Record } from "./types";
+import { QuoteScraper } from "./QuoteScraper";
+import type { ScrapedRecord } from "./types";
 
 /**
  * Main: Orquestrador da arquitetura Modular
@@ -19,7 +19,7 @@ const logger = winston.createLogger({
 
 const main = async (): Promise<void> => {
   const pool = new BrowserPool(2, logger);
-  const allRecords: Record[] = [];
+  const allRecords: ScrapedRecord[] = [];
 
   try {
     await pool.init();

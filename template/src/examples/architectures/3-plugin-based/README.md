@@ -30,6 +30,7 @@
 ✅ Carregar/descarregar dinamicamente
 ✅ Fácil para comunidade contribuir
 ✅ Escalável horizontalmente
+✅ Permite plugins SSR (`cheerio`) e browser (`playwright`)
 
 ## Desvantagens
 ❌ Complexo de implementar
@@ -51,3 +52,9 @@ npx tsx main.ts
 4. Engine automáticamente detecta e roda
 
 Perfeito para ecossistema de plugins.
+
+## Opção SSR com Cheerio
+
+- Defina metadado de engine no plugin (`http` ou `browser`).
+- Priorize plugins HTTP para ganho de throughput.
+- Use plugin browser como fallback para conteúdo dinâmico.

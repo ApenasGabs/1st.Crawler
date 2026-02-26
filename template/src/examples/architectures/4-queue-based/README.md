@@ -33,6 +33,7 @@
 ✅ Distribuído (multi-worker)
 ✅ Escalabilidade alta
 ✅ Resiliência a crashes
+✅ Permite filas separadas para SSR (`cheerio`) e browser (`playwright`)
 
 ## Desvantagens
 ❌ Requer Redis
@@ -64,3 +65,9 @@ npx tsx main.ts
 4. Queue automáticamente processa
 
 Recomendado para produção.
+
+## Opção SSR com Cheerio
+
+- Crie uma fila `http-queue` para jobs SSR com `cheerio`.
+- Reserve `browser-queue` apenas para páginas JS-heavy.
+- Escale workers HTTP separadamente para reduzir custo.

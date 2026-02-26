@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import type { Imovel, RawData } from "../../domain/types";
+import type { RawData, ScrapedRecord } from "../../domain/types";
 import { BaseScraper } from "../base/BaseScraper";
 
 export class SiteAScraper extends BaseScraper<RawData> {
@@ -23,15 +23,17 @@ export class SiteAScraper extends BaseScraper<RawData> {
     return items;
   };
 
-  protected map = async (raw: RawData[]): Promise<Imovel[]> =>
+  protected map = async (raw: RawData[]): Promise<ScrapedRecord[]> =>
     raw.map((r) => ({
       id: r.id,
       source: this.name,
       title: r.title,
       price: r.price,
-      location: { city: "Sao Paulo", state: "SP" },
+      location: "Sao Paulo, SP",
       url: r.url,
     }));
 
-  protected validate = async (data: Imovel[]): Promise<Imovel[]> => data;
+  protected validate = async (
+    data: ScrapedRecord[],
+  ): Promise<ScrapedRecord[]> => data;
 }

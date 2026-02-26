@@ -1,12 +1,30 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import readline from "readline/promises";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ─── Engines de extração (decisão que vem ANTES da arquitetura) ────────────
+const AVAILABLE_ENGINES = ["ssr", "csr", "hybrid"] as const;
+type Engine = (typeof AVAILABLE_ENGINES)[number];
+
+const ENGINE_DESCRIPTIONS: Record<Engine, string> = {
+  ssr: "HTTP + Cheerio  (sites server-side rendered)",
+  csr: "Playwright      (sites client-side / SPA)",
+  hybrid: "Cheerio + Playwright fallback (melhor dos dois)",
+};
+
+const ENGINE_COLORS: Record<Engine, string> = {
+  ssr: "\u001b[32m",
+  csr: "\u001b[36m",
+  hybrid: "\u001b[33m",
+};
+
+// ─── Arquiteturas de projeto ───────────────────────────────────────────────
 interface Options {
+  engine: Engine;
   architecture: string;
   destination: string;
   backup: boolean;
@@ -42,6 +60,7 @@ const ROOT_FILES = [
 
 const parseArgs = (): Options => {
   const args = process.argv.slice(2);
+  let engine: Engine | "" = "";
   let architecture = "";
   let destination = "new-template";
   let backup = true;
@@ -49,6 +68,12 @@ const parseArgs = (): Options => {
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i];
+    if (arg === "--engine" || arg === "-e") {
+      const val = (args[i + 1] ?? "") as Engine;
+      if (AVAILABLE_ENGINES.includes(val)) engine = val;
+      i += 1;
+      continue;
+    }
     if (arg === "--arch" || arg === "-a") {
       architecture = args[i + 1] ?? "";
       i += 1;
@@ -67,13 +92,21 @@ const parseArgs = (): Options => {
     }
   }
 
-  return { architecture, destination, backup, interactive };
+  return {
+    engine: engine || ("" as Engine),
+    architecture,
+    destination,
+    backup,
+    interactive,
+  };
 };
 
 const promptSelect = async (
   label: string,
   options: string[],
   defaultIndex: number,
+  descriptions?: Record<string, string>,
+  colors?: Record<string, string>,
 ): Promise<string> => {
   return new Promise((resolve) => {
     let selectedIndex = defaultIndex;
@@ -86,8 +119,11 @@ const promptSelect = async (
         const isSelected = index === selectedIndex;
         const pointer = isSelected ? "❯" : " ";
         const suffix = index === defaultIndex ? " (padrao)" : "";
-        const color = ARCH_COLORS[option] ?? "";
-        const text = `${pointer} ${color}${option}${COLOR_RESET}${suffix}`;
+        const color = (colors ?? ARCH_COLORS)[option] ?? "";
+        const desc = descriptions?.[option]
+          ? `  — ${descriptions[option]}`
+          : "";
+        const text = `${pointer} ${color}${option}${COLOR_RESET}${desc}${suffix}`;
         console.log(text);
       });
 
@@ -133,10 +169,20 @@ const promptSelect = async (
 };
 
 const promptInteractive = async (
-  defaults: Omit<Options, "architecture" | "interactive">,
+  defaults: Omit<Options, "architecture" | "engine" | "interactive">,
 ): Promise<Omit<Options, "interactive">> => {
+  // ── Passo 1: Engine de extração ──────────────────────────────────────────
+  const engine = (await promptSelect(
+    "1/2 — Engine de extração (tipo de site):",
+    [...AVAILABLE_ENGINES],
+    2, // hybrid como padrão
+    ENGINE_DESCRIPTIONS,
+    ENGINE_COLORS,
+  )) as Engine;
+
+  // ── Passo 2: Arquitetura do projeto ──────────────────────────────────────
   const architecture = await promptSelect(
-    "Arquitetura:",
+    "2/2 — Arquitetura do projeto:",
     [...AVAILABLE_ARCHITECTURES],
     0,
   );
@@ -162,7 +208,7 @@ const promptInteractive = async (
 
   await rl.close();
 
-  return { architecture, destination, backup };
+  return { engine, architecture, destination, backup };
 };
 
 const exists = async (targetPath: string): Promise<boolean> => {
@@ -210,23 +256,33 @@ const backupDestination = async (destination: string): Promise<void> => {
 const scaffold = async (): Promise<void> => {
   const rootDir = path.resolve(__dirname, "..");
   const {
+    engine: argEngine,
     architecture: argArch,
     destination,
     backup,
     interactive,
   } = parseArgs();
 
-  const shouldPrompt = interactive || !argArch;
+  const shouldPrompt = interactive || !argArch || !argEngine;
   const resolved = shouldPrompt
     ? await promptInteractive({ destination, backup })
-    : { architecture: argArch, destination, backup };
+    : { engine: argEngine, architecture: argArch, destination, backup };
 
   const {
+    engine,
     architecture,
     destination: resolvedDest,
     backup: resolvedBackup,
   } = resolved;
 
+  // ── Validar engine ───────────────────────────────────────────────────────
+  if (!AVAILABLE_ENGINES.includes(engine)) {
+    throw new Error(
+      `Engine invalida: ${engine}. Opcoes: ${AVAILABLE_ENGINES.join(", ")}`,
+    );
+  }
+
+  // ── Validar arquitetura ──────────────────────────────────────────────────
   if (
     !AVAILABLE_ARCHITECTURES.includes(
       architecture as (typeof AVAILABLE_ARCHITECTURES)[number],
@@ -287,8 +343,60 @@ const scaffold = async (): Promise<void> => {
   await fs.mkdir(destSrc, { recursive: true });
   await copyDir(sourceDir, destSrc);
 
-  console.log(`✅ Template gerado em: ${destinationDir}`);
-  console.log(`✅ Arquitetura aplicada: ${architecture}`);
+  // ── Copiar base scrapers conforme engine ─────────────────────────────────
+  const baseDir = path.join(rootDir, "src", "scrapers", "base");
+  const destBase = path.join(destSrc, "scrapers", "base");
+  await fs.mkdir(destBase, { recursive: true });
+
+  if (engine === "csr" || engine === "hybrid") {
+    await copyFile(
+      path.join(baseDir, "BaseScraper.ts"),
+      path.join(destBase, "BaseScraper.ts"),
+    );
+  }
+  if (engine === "ssr" || engine === "hybrid") {
+    await copyFile(
+      path.join(baseDir, "BaseHttpScraper.ts"),
+      path.join(destBase, "BaseHttpScraper.ts"),
+    );
+  }
+
+  // ── Copiar BrowserPool apenas quando há browser ──────────────────────────
+  if (engine === "csr" || engine === "hybrid") {
+    const pipelineDir = path.join(rootDir, "src", "pipeline");
+    const destPipeline = path.join(destSrc, "pipeline");
+    await fs.mkdir(destPipeline, { recursive: true });
+    const poolSrc = path.join(pipelineDir, "BrowserPool.ts");
+    if (await exists(poolSrc)) {
+      await copyFile(poolSrc, path.join(destPipeline, "BrowserPool.ts"));
+    }
+  }
+
+  console.log(`\n✅ Template gerado em: ${destinationDir}`);
+  console.log(
+    `   Engine:       ${ENGINE_COLORS[engine]}${engine}${COLOR_RESET} — ${ENGINE_DESCRIPTIONS[engine]}`,
+  );
+  console.log(
+    `   Arquitetura:  ${ARCH_COLORS[architecture] ?? ""}${architecture}${COLOR_RESET}`,
+  );
+
+  if (engine === "ssr") {
+    console.log(
+      "\n💡 Dica: use BaseHttpScraper (fetch + cheerio) como base dos seus scrapers.",
+    );
+    console.log(
+      "   Playwright NÃO foi incluído — instale-o apenas se precisar de fallback.",
+    );
+  } else if (engine === "hybrid") {
+    console.log(
+      "\n💡 Dica: use BaseHttpScraper para sites SSR e BaseScraper para sites CSR/SPA.",
+    );
+    console.log("   Ambas as bases foram incluídas no template.");
+  } else {
+    console.log(
+      "\n💡 Dica: use BaseScraper (Playwright) como base dos seus scrapers.",
+    );
+  }
 };
 
 const main = async (): Promise<void> => {

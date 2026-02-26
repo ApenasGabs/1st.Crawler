@@ -1,5 +1,5 @@
 import { BaseScraper } from "./BaseScraper";
-import type { RawData, Record } from "./types";
+import type { RawData, ScrapedRecord } from "./types";
 
 /**
  * Exemplo 2: Scraper de livros (Books to Scrape)
@@ -34,7 +34,7 @@ export class BookScraper extends BaseScraper {
     }
   }
 
-  map(rawData: RawData[]): Record[] {
+  map(rawData: RawData[]): ScrapedRecord[] {
     return rawData.map((data) => ({
       id: data.id,
       source: "books-to-scrape",

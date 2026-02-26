@@ -30,11 +30,18 @@
 ✅ Simples de entender e modificar
 ✅ Fácil adicionar novo scraper
 ✅ Bom para prototipagem
+✅ Permite scraper SSR leve com `fetch` + `cheerio`
 
 ## Desvantagens
 ❌ Sem separação clara de domínios
 ❌ Lógica compartilhada pode crescer demais
 ❌ Difícil de testar partes específicas
+
+## Opção SSR com Cheerio
+
+- Para sites SSR, adicione uma base HTTP (`BaseHttpScraper`) além da base Playwright.
+- Mantenha o mesmo contrato de saída para o pipeline de merge/validação.
+- Use Playwright apenas como fallback para páginas JS-heavy.
 
 ## Como rodar
 

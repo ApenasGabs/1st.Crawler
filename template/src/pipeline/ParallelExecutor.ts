@@ -1,11 +1,11 @@
+import type { ScrapedRecord } from "../domain/types";
 import type { BaseScraper } from "../scrapers/base/BaseScraper";
-import type { Imovel } from "../domain/types";
 import type { BrowserPool } from "./BrowserPool";
 
 export interface ScraperResult {
   scraper: string;
   status: "success" | "failed";
-  data?: Imovel[];
+  data?: ScrapedRecord[];
   error?: string;
   durationMs: number;
 }

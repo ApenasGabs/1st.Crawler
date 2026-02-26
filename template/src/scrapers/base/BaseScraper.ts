@@ -1,5 +1,5 @@
 import type { BrowserContext, Page } from "playwright";
-import type { Imovel, RawData } from "../../domain/types";
+import type { RawData, ScrapedRecord } from "../../domain/types";
 import { logger } from "../../utils/logger";
 
 export interface ScraperConfig {
@@ -19,10 +19,10 @@ export abstract class BaseScraper<T extends RawData = RawData> {
   };
 
   protected abstract scrape(page: Page): Promise<T[]>;
-  protected abstract map(raw: T[]): Promise<Imovel[]>;
-  protected abstract validate(data: Imovel[]): Promise<Imovel[]>;
+  protected abstract map(raw: T[]): Promise<ScrapedRecord[]>;
+  protected abstract validate(data: ScrapedRecord[]): Promise<ScrapedRecord[]>;
 
-  run = async (context: BrowserContext): Promise<Imovel[]> => {
+  run = async (context: BrowserContext): Promise<ScrapedRecord[]> => {
     const start = Date.now();
     const page = await context.newPage();
     try {

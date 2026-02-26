@@ -1,12 +1,12 @@
 import fs from "fs";
 import type { Logger } from "winston";
-import type { Record } from "./types";
+import type { ScrapedRecord } from "./types";
 
 /**
  * Merge de resultados de múltiplos scrapers + validação básica
  */
 export const mergeAndValidate = async (
-  scraperOutputs: Record[],
+  scraperOutputs: ScrapedRecord[],
   logger: Logger,
 ): Promise<void> => {
   logger.info(`Merging ${scraperOutputs.length} records`);

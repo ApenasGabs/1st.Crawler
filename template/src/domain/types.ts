@@ -25,3 +25,18 @@ export interface RawData {
   location?: string;
   url: string;
 }
+
+/**
+ * Dados mapeados e prontos para validação/persistência.
+ * Tipo genérico — renomeie ou estenda conforme seu domínio.
+ */
+export interface ScrapedRecord {
+  id: string;
+  source: string;
+  title: string;
+  description?: string;
+  price?: number | string;
+  location?: string | { city: string; state: string };
+  url: string;
+  metadata?: Record<string, unknown>;
+}
