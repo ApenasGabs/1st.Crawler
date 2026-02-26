@@ -1,13 +1,12 @@
 {
   "name": "create-simplecrawl",
   "version": "0.1.0",
-  "description": "SimpleCrawl — scaffold a web scraping project interactively. Choose engine (SSR/CSR/hybrid) and architecture, like create-vite.",
+  "description": "SimpleCrawl — scaffold a web scraping project interactively. Choose engine (SSR/CSR/hybrid) and architecture.",
   "type": "module",
   "license": "MIT",
   "author": "Apenasgabs",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/Apenasgabs/1st.Crawler.git"
+    "url": "git+https://github.com/Apenasgabs/SimpleCrawl.git"
   },
   "keywords": [
     "create",

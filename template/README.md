@@ -1,4 +1,4 @@
-# 1st Crawler Template (Playwright + TypeScript)
+# Simple Crawler Template (Playwright + TypeScript)
 
 Template para scrapers com arquitetura Modular + DDD Lite + Paralelização interna, com suporte a estratégia híbrida (Playwright para CSR e Cheerio para SSR), otimizado para pipelines de até 6h.
 
@@ -18,7 +18,7 @@ npm run merge:validate
 # Gerar um novo template baseado em arquitetura
 npm run scaffold:architecture -- --arch 1-modular --dest new-template
 
-# Modo interativo (estilo vite)
+# Modo interativo
 npm run scaffold:architecture
 
 > Dica: use as setas ↑/↓ para selecionar a arquitetura
