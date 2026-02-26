@@ -8,6 +8,8 @@
     "scrape:parallel": "tsx src/main.ts",
     "scrape:siteA": "tsx src/scrapers/siteA/run.ts",
     "scrape:siteB": "tsx src/scrapers/siteB/run.ts",
+    "scrape:siteC": "tsx src/scrapers/siteC/run.ts",
+    "example:ssr": "tsx examples/ssr-cheerio.ts",
     "merge:validate": "tsx src/pipeline/merge-and-validate.ts",
     "checkpoint:save": "tsx src/pipeline/checkpoint-save.ts",
     "scaffold:architecture": "tsx scripts/scaffold-architecture.ts",
@@ -17,6 +19,7 @@
   },
   "dependencies": {
     "@types/node": "^20.12.12",
+    "cheerio": "^1.0.0",
     "dotenv": "^16.4.5",
     "joi": "^17.13.3",
     "playwright": "^1.45.3",

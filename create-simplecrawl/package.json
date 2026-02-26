@@ -1,0 +1,38 @@
+{
+  "name": "create-simplecrawl",
+  "version": "0.1.0",
+  "description": "SimpleCrawl — scaffold a web scraping project interactively. Choose engine (SSR/CSR/hybrid) and architecture, like create-vite.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Apenasgabs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Apenasgabs/1st.Crawler.git",
+    "directory": "create-simplecrawl"
+  },
+  "keywords": [
+    "create",
+    "scaffold",
+    "scraper",
+    "crawler",
+    "simplecrawl",
+    "playwright",
+    "cheerio",
+    "template",
+    "beginner"
+  ],
+  "bin": {
+    "create-simplecrawl": "bin/index.mjs"
+  },
+  "files": [
+    "bin",
+    "template"
+  ],
+  "scripts": {
+    "dev": "node bin/index.mjs",
+    "build": "echo 'nothing to build — ships as plain JS'"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

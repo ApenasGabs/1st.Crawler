@@ -74,6 +74,18 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+
+# WhatsApp web (legacy)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Scraper output
+data/scrapers/
+data/merged.json
+checkpoints/
+logs/
+backup/
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

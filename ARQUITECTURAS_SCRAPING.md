@@ -1,6 +1,22 @@
-# Arquiteturas para Web Scraping com Playwright
+# Arquiteturas para Web Scraping (Playwright + Cheerio)
 
 Um guia comparativo de arquiteturas para construir scrapers robustos, escaláveis e mantíveis.
+
+## 🌐 Estratégias de Renderização (CSR vs SSR)
+
+Antes de escolher arquitetura, escolha o **motor de extração por tipo de site**:
+
+| Tipo de site | Sinal comum | Estratégia recomendada | Stack sugerida |
+|---|---|---|---|
+| **SSR/estático** | HTML já contém os dados no `view-source` | Requisição HTTP + parse de HTML | `fetch` + `cheerio` |
+| **CSR/SPA** | HTML inicial vazio e dados após JS | Automação de browser | `playwright` |
+| **Híbrido** | Parte no HTML, parte via API/JS | Tentar SSR primeiro, fallback browser | `cheerio` + `playwright` |
+
+### Regra prática
+
+- Comece com `cheerio` para páginas SSR (mais rápido e barato).
+- Use `playwright` apenas quando o conteúdo depender de JavaScript, login complexo, anti-bot visual ou interação de UI.
+- Em pipelines longos, priorize o modelo híbrido: **HTTP-first, browser-fallback**.
 
 ## 📊 Análise do Projeto "QueroDADOS"
 
@@ -78,6 +94,11 @@ main.ts                          # Entry point limpo
 - Prototipagem rápida
 - Time pequeno
 
+**Opção SSR (Cheerio):**
+- Crie `BaseHttpScraper` paralela à `BaseScraper` de Playwright.
+- Para portais SSR, implemente scraper com `fetch` + `cheerio` para reduzir custo e tempo.
+- Mantenha o mesmo contrato de saída para o pipeline de merge/validação.
+
 ---
 
 ## 🏗️ Arquitetura 2: Domain-Driven Design (DDD)
@@ -137,6 +158,11 @@ src/
 - Scaling é prioridade
 - Longo prazo
 
+**Opção SSR (Cheerio):**
+- Trate `cheerio` como adapter de infraestrutura HTTP.
+- Deixe a decisão Playwright/Cheerio fora do domínio, dentro da camada de adapters.
+- Permita fallback para Playwright quando a extração SSR falhar.
+
 ---
 
 ## 🏗️ Arquitetura 3: Plugin-Based
@@ -193,6 +219,11 @@ src/
 - Muitos scrapers heterogêneos
 - SaaS scraping platform
 
+**Opção SSR (Cheerio):**
+- Separe plugins por engine: `*.http.plugin` (Cheerio) e `*.browser.plugin` (Playwright).
+- Registre metadados de capacidade (SSR, JS-heavy, auth) para roteamento automático.
+- Priorize execução dos plugins HTTP para ganhar throughput.
+
 ---
 
 ## 🏗️ Arquitetura 4: Queue-Based (Async Job Processing)
@@ -244,6 +275,11 @@ src/
 - Múltiplos workers/máquinas
 - SLA importante
 
+**Opção SSR (Cheerio):**
+- Crie filas distintas: `http-queue` (Cheerio) e `browser-queue` (Playwright).
+- Aloque mais workers para HTTP e menos para browser (custos menores e maior volume).
+- Use retry agressivo em HTTP e retry mais conservador em browser.
+
 ---
 
 ## 📋 Comparação Rápida
@@ -254,6 +290,7 @@ src/
 | **Escalabilidade** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
 | **Testabilidade** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ |
 | **Performance (6h)** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ |
+| **Fit SSR (Cheerio)** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
 | **Curva Aprendizado** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ |
 | **Infra Necessária** | Minimal | Minimal | Minimal | Complexa |
 | **Melhor Para** | Começo | Médio prazo | Extensível | Produção |
@@ -271,7 +308,7 @@ Se seus scrapers rodam em **pipelines de no máximo 6 horas**, as prioridades mu
 - Não há necessidade de processamento assíncrono
 - Complexidade desnecessária para job único
 
-#### ✅ **Recomendação: Modular + Paralelização**
+#### ✅ **Recomendação: Modular + Paralelização + HTTP-first (Cheerio)**
 
 ```typescript
 // main.ts - Execução paralela
@@ -294,6 +331,7 @@ src/
 ├── scrapers/
 │   ├── base/
 │   │   ├── BaseScraper.ts          # Playwright compartilhado
+│   │   ├── BaseHttpScraper.ts      # SSR com fetch + cheerio
 │   │   └── ParallelExecutor.ts     # Orquestrador paralelo
 │   ├── olx/
 │   ├── zap/
@@ -311,7 +349,7 @@ scripts/
 
 ### 🚀 Estratégias para Maximizar Performance em 6h
 
-#### 1. **Paralelização Inteligente**
+#### 1. **Paralelização Inteligente (HTTP primeiro)**
 
 ```typescript
 // ❌ Ruim - Sequencial (desperdiça tempo)
@@ -321,7 +359,8 @@ for (const scraper of scrapers) {
 
 // ✅ Bom - Paralelo com controle
 const results = await Promise.allSettled(
-  scrapers.map(async (scraper) => {
+  scrapers.sort((a, b) => Number(a.requiresBrowser) - Number(b.requiresBrowser))
+    .map(async (scraper) => {
     const timeout = setTimeout(() => {
       scraper.cancel(); // Cancela após 5h
     }, 5 * 60 * 60 * 1000);
@@ -331,7 +370,7 @@ const results = await Promise.allSettled(
     } finally {
       clearTimeout(timeout);
     }
-  })
+    })
 );
 ```
 
@@ -493,13 +532,14 @@ jobs:
 
 ### 🏆 Arquitetura Recomendada para Pipeline de 6h
 
-**✅ Use: Modular Simples + Paralelização + Checkpointing**
+**✅ Use: Modular Simples + HTTP-first (Cheerio) + Browser Fallback + Checkpointing**
 
 ```
 src/
 ├── scrapers/
 │   ├── base/
 │   │   ├── BaseScraper.ts
+│   │   ├── BaseHttpScraper.ts      # fetch + cheerio
 │   │   ├── BrowserPool.ts          # Reuso de browser
 │   │   └── types.ts
 │   ├── olx/OlxScraper.ts

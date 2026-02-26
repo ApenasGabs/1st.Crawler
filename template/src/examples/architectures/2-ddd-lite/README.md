@@ -33,6 +33,7 @@
 ✅ Adapters podem variar sem afetar domínio
 ✅ Fácil de testar (DDD)
 ✅ Escalável para múltiplos adapters
+✅ Adapter SSR com `cheerio` sem impactar domínio
 
 ## Desvantagens
 ❌ Mais complexo inicialmente
@@ -53,3 +54,9 @@ npx tsx main.ts
 3. Domínio continua intacto
 
 Perfeito para manter dados coerentes mesmo com múltiplas fontes.
+
+## Opção SSR com Cheerio
+
+- Crie um adapter HTTP (`SsrCheerioAdapter`) para páginas SSR.
+- Mantenha fallback para adapter Playwright quando necessário.
+- Centralize a decisão de engine na camada de aplicação.

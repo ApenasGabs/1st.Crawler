@@ -1,44 +1,70 @@
 import fs from "fs";
 import { BrowserPool } from "./pipeline/BrowserPool";
 import { ParallelExecutor } from "./pipeline/ParallelExecutor";
-import { scraperRegistry } from "./scrapers/registry";
+import {
+  browserScraperRegistry,
+  httpScraperRegistry,
+} from "./scrapers/registry";
 
 const run = async (): Promise<void> => {
-  const pool = new BrowserPool(3);
-  await pool.initialize();
-  try {
-    const executor = new ParallelExecutor(pool, 5 * 60 * 60 * 1000); // 5h por scraper
-    const results = await executor.runAll(scraperRegistry);
+  const allResults: { source: string; data: unknown[] }[] = [];
 
-    const ok = results
-      .filter((r) => r.status === "success" && r.data)
-      .flatMap((r) => r.data!);
-
-    fs.mkdirSync("data/scrapers", { recursive: true });
-    fs.writeFileSync(
-      "data/scrapers/siteA.json",
-      JSON.stringify(
-        ok.filter((i) => i.source === "siteA"),
-        null,
-        2,
-      ),
+  // ── 1. HTTP scrapers primeiro (SSR — mais rápido, sem browser) ───────────
+  if (httpScraperRegistry.length > 0) {
+    console.log(
+      `\n⚡ Rodando ${httpScraperRegistry.length} scraper(s) HTTP (SSR)…`,
     );
-    fs.writeFileSync(
-      "data/scrapers/siteB.json",
-      JSON.stringify(
-        ok.filter((i) => i.source === "siteB"),
-        null,
-        2,
-      ),
+    const httpResults = await Promise.allSettled(
+      httpScraperRegistry.map((s) => s.run()),
     );
 
-    console.log("Scraping finished with:", {
-      success: results.filter((r) => r.status === "success").length,
-      failed: results.filter((r) => r.status === "failed").length,
+    httpResults.forEach((r, i) => {
+      const name = httpScraperRegistry[i].name;
+      if (r.status === "fulfilled") {
+        allResults.push({ source: name, data: r.value });
+      } else {
+        console.error(`❌ HTTP scraper ${name}: ${r.reason}`);
+      }
     });
-  } finally {
-    await pool.cleanup();
   }
+
+  // ── 2. Browser scrapers (CSR — Playwright) ──────────────────────────────
+  if (browserScraperRegistry.length > 0) {
+    console.log(
+      `\n🌐 Rodando ${browserScraperRegistry.length} scraper(s) Playwright (CSR)…`,
+    );
+    const pool = new BrowserPool(3);
+    await pool.initialize();
+    try {
+      const executor = new ParallelExecutor(pool, 5 * 60 * 60 * 1000);
+      const results = await executor.runAll(browserScraperRegistry);
+
+      results.forEach((r) => {
+        if (r.status === "success" && r.data) {
+          allResults.push({ source: r.scraper, data: r.data });
+        } else if (r.status === "failed") {
+          console.error(`❌ Browser scraper ${r.scraper}: ${r.error}`);
+        }
+      });
+    } finally {
+      await pool.cleanup();
+    }
+  }
+
+  // ── 3. Persistir resultados ──────────────────────────────────────────────
+  fs.mkdirSync("data/scrapers", { recursive: true });
+
+  for (const { source, data } of allResults) {
+    fs.writeFileSync(
+      `data/scrapers/${source}.json`,
+      JSON.stringify(data, null, 2),
+    );
+  }
+
+  console.log("\n✅ Scraping finalizado:", {
+    total: allResults.length,
+    items: allResults.reduce((acc, r) => acc + r.data.length, 0),
+  });
 };
 
 void run();
